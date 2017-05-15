@@ -21,7 +21,7 @@ from mininet.link import Link
 class App:
 
     def __init__(self, master):
-
+        #main screen goes here
         w = Label(root, text="Choose from the available topology")
         w.pack()
         frame = Frame(master)
@@ -44,6 +44,8 @@ class App:
         self.reversed_Button.pack(side=LEFT)
         self.tutorial_Button = Button(frame, text="Tutorials", command=self.tutorial)
         self.tutorial_Button.pack(side=LEFT)
+
+        #topologies goes here
 
     def minimal_topo(self):
         setLogLevel('info')
@@ -110,6 +112,8 @@ class App:
         CLI(net)
         net.stop()
 
+        #tutorial menu goes here
+
     def tutorial(self):
         topt = Toplevel()
         topt.title("SDN Tutorial Menu")
@@ -127,74 +131,108 @@ class App:
         self.tutor3_Button.pack(side=LEFT)
         self.tutor4_Button = Button(topt, text="Tutorial 4", command=self.tutorial_4)
         self.tutor4_Button.pack(side=LEFT)
-        #print "Several tutorials are available: "
-        #print "1. Basic mininet commands." #ping, iperf, IP change, etc. Use minimal topo.
-        #print "2. View Open vSwitch configurations." #use ovs-ofctl
-        #print "3. Generate and monitor traffic." #tcpdump, wireshark,
-        #print "4. Configure routing on network." #link up or down. make several switch route for this
-        #choice = raw_input()
-        #if choice == "1":
-        #    self.tutorial_1()
-        #elif choice == "2":
-        #    self.tutorial_2()
-        #elif choice == "3":
-        #    self.tutorial_3()
-        #elif choice == "4":
-        #    self.tutorial_4()
-        #elif choice == "5":
-        #    self.tutorial_5()
+
+        #option menu goes here
 
     def options(self, net):
-        while True:
-            print "What would you like to do?"
-            print "1. Set Bandwidth"
-            print "2. Set Delay"
-            print "3. Set Jitter"
-            print "4. Set Loss"
-            print "5. Set IP"
-            print "6. Set MAC"
-            print "7. Up/Down Link"
-            print "0. Open CLI" #Due to new path, use it extensively.
-            print "Type 'exit' to exit program."
+        topopt = Toplevel()
+        topopt.title("SDN Options Menu")
 
-            choice = raw_input()
-            if choice == "1":
-                self.set_bandwidth(net)
-            elif choice == "2":
-                self.set_delay(net)
-            elif choice == "3":
-                self.set_jitter(net)
-            elif choice == "4":
-                self.set_loss(net)
-            elif choice == "5":
-                self.set_IP(net)
-            elif choice == "6":
-                self.set_MAC(net)
-            elif choice == "7":
-                self.set_link(net)
-            elif choice == "0":
-                CLI(net)
-            elif choice == "exit":
-                break
+        self.button = Button(
+            topopt, text="QUIT", fg="red", command=topopt.quit
+            )
+        self.button.pack(side=LEFT)
+
+        self.ping_Button = Button(topopt, text="Ping", width=15, command=lambda: self.ping_node(net))
+        self.ping_Button.pack(side="top")
+        self.bw_Button = Button(topopt, text="Bandwidth", width=15, command=lambda: self.set_bandwidth(net))
+        self.bw_Button.pack(side="top")
+        self.delay_Button = Button(topopt, text="Delay", width=15, command=lambda: self.set_delay(net))
+        self.delay_Button.pack(side="top")
+        self.jitter_Button = Button(topopt, text="Jitter", width=15, command=lambda: self.set_jitter(net))
+        self.jitter_Button.pack(side="top")
+        self.loss_Button = Button(topopt, text="Loss",width=15, command=lambda: self.set_loss(net))
+        self.loss_Button.pack(side="top")
+        self.IP_Button = Button(topopt, text="Set IP",width=15, command=lambda: self.set_IP(net))
+        self.IP_Button.pack(side="top")
+        self.MAC_Button = Button(topopt, text="Set MAC",width=15, command=lambda: self.set_MAC(net))
+        self.MAC_Button.pack(side="top")
+        self.link_Button = Button(topopt, text="Up/Down Link",width=15, command=lambda: self.set_link(net))
+        self.link_Button.pack(side="top")
+        self.host_Button = Button(topopt, text="Add Host",width=15, command=lambda: self.add_host(net))
+        self.host_Button.pack(side="top")
+        self.switch_Button = Button(topopt, text="Add Switch",width=15, command=lambda: self.add_switch(net))
+        self.switch_Button.pack(side="top")
+        self.iperf_Button = Button(topopt, text="Do iperf",width=15, command=lambda: self.start_iperf(net))
+        self.iperf_Button.pack(side="top")
+        self.iperfudp_Button = Button(topopt, text="Do iperfudp",width=15, command=lambda: self.start_iperfudp(net))
+        self.iperfudp_Button.pack(side="top")
+        self.cli_Button = Button(topopt, text="CLI", width=15,command=lambda: CLI(net))
+        self.cli_Button.pack(side="top")
+        topopt.mainloop()
+
+        #while True:
+        #    print "What would you like to do?"
+        #    print "1. Set Bandwidth"
+        #    print "2. Set Delay"
+        #    print "3. Set Jitter"
+        #    print "4. Set Loss"
+        #    print "5. Set IP"
+        #    print "6. Set MAC"
+        #    print "7. Up/Down Link"
+        #    print "0. Open CLI" #Due to new path, use it extensively.
+        #    print "Type 'exit' to exit program."
+
+        #    choice = raw_input()
+        #    if choice == "1":
+        #        self.set_bandwidth(net)
+        #    elif choice == "2":
+        #        self.set_delay(net)
+        #    elif choice == "3":
+        #        self.set_jitter(net)
+        #    elif choice == "4":
+        #        self.set_loss(net)
+        #    elif choice == "5":
+        #        self.set_IP(net)
+        #    elif choice == "6":
+        #        self.set_MAC(net)
+        #    elif choice == "7":
+        #        self.set_link(net)
+        #    elif choice == "0":
+        #        CLI(net)
+        #        break
+
+        #utilities goes here
+
+    #def getNodeByName(self):
+
+    def ping_node(self,net):
+        currenth1=raw_input("Please enter node 1: ")
+        currenth2=raw_input("Please enter node 2: ")
+        h = ['h1','h2']
+        h[0] = net.get(currenth1)
+        h[1] = net.get(currenth2)
+        net.ping(h)
 
     def set_bandwidth(self, net):
         currentn1=raw_input("Please enter node 1 of the link: ")
         currentn2=raw_input("Please enter node 2 of the link: ")
-        b1 = net.getNodeByName(currentn1)
-        b2 = net.getNodeByName(currentn2)
+        b1 = net.get(currentn1)
+        b2 = net.get(currentn2)
         newbw=raw_input("Please enter the desired bandwidth(b/s): ")
         links = b1.connectionsTo(b2)
         srcLink = links[0][1]
         dstLink = links[0][1]
         srcLink.config(**{ 'bw' : newbw})
         dstLink.config(**{ 'bw' : newbw})
-        #print "The new bandwidth is ", srcLink.bw
+        print "The new bandwidth is ", srcLink.config('bw')
     def set_delay(self, net):
         currentd1=raw_input("Please enter node 1 you want to change: ")
-        currentd1=raw_input("Please enter node 2 you want to change: ")
-        d1 = net.getNodeByName(currentd1)
-        d2 = net.getNodeByName(currentd2)
+        currentd2=raw_input("Please enter node 2 you want to change: ")
+        d1 = net.get(currentd1)
+        d2 = net.get(currentd2)
         newdelay=raw_input("Please enter the desired delay: ")
+        links = d1.connectionsTo(d2)
         srcLink = links[0][1]
         dstLink = links[0][1]
         srcLink.config(**{ 'delay' : newdelay})
@@ -202,9 +240,10 @@ class App:
     def set_jitter(self, net):
         currentj1=raw_input("Please enter node 1 you want to change: ")
         currentj2=raw_input("Please enter node 2 you want to change: ")
-        j1 = net.getNodeByName(currentj1)
-        j2 = net.getNodeByName(currentj2)
+        j1 = net.get(currentj1)
+        j2 = net.get(currentj2)
         newjitter=raw_input("Please enter the desired jitter: ")
+        links = j1.connectionsTo(j2)
         srcLink = links[0][1]
         dstLink = links[0][1]
         srcLink.config(**{ 'jitter' : newjitter})
@@ -212,9 +251,10 @@ class App:
     def set_loss(self, net):
         currentl1=raw_input("Please enter node 1 you want to change: ")
         currentl2=raw_input("Please enter node 2 you want to change: ")
-        l1 = net.getNodeByName(currentl1)
-        l2 = net.getNodeByName(currentl2)
+        l1 = net.get(currentl1)
+        l2 = net.get(currentl2)
         newloss=raw_input("Please enter the desired loss: ")
+        links = l1.connectionsTo(l2)
         srcLink = links[0][1]
         dstLink = links[0][1]
         srcLink.config(**{ 'loss' : newloss})
@@ -236,19 +276,48 @@ class App:
     def set_link(self, net):
         print "1. Up Link"
         print "2. Down Link"
-        link_opt = raw_input("Which option do you want to do?")
+        link_opt = raw_input("Which option do you want to do? ")
         if link_opt=="1":
             print ("Enter the nodes you want to link: ")
             link_1 = raw_input()
             host1 = net.get(link_1)
             link_2 = raw_input()
             host2 = net.get(link_2)
-            Link1=self.Link(host1,host2)
+            Link1=net.Link(host1,host2)
         if link_opt=="2":
-            deleted = raw_input("Enter the node with link you want to delete: ")
-            currenthost = net.get(deleted)
-            Link1=self.link(currenthost)
+            delete1 = raw_input("Enter 1st node with link you want to delete: ")
+            delete2 = raw_input("Enter 2nd node with link you want to delete: ")
+            host1 = net.get(delete1)
+            host2 = net.get(delete2)
+            Link1=net.link(host1,host2)
             Link1.delete()
+
+    def add_host(self,net):
+        hostname = raw_input("Enter name of host: ")
+        self.addHost(hostname)
+
+    def add_switch(self,net):
+        switchname = raw_input("Enter name of switch: ")
+        self.addSwitch(switchname)
+
+    def start_iperf(self,net):
+        currenth1=raw_input("Please enter node 1: ")
+        currenth2=raw_input("Please enter node 2: ")
+        h = ['h1','h2']
+        h[0] = net.get(currenth1)
+        h[1] = net.get(currenth2)
+        net.iperf(h)
+
+    def start_iperfudp(self,net):
+        currenth1=raw_input("Please enter node 1: ")
+        currenth2=raw_input("Please enter node 2: ")
+        bw=raw_input("Please enter UDP Bandwidth: ")
+        h = ['h1','h2']
+        h[0] = net.get(currenth1)
+        h[1] = net.get(currenth2)
+        net.iperf(h, l4Type='UDP',udpBw=bw)
+
+        #tutorial instructions goes here
 
     def tutorial_1(self):
         setLogLevel('info')
@@ -272,7 +341,7 @@ class App:
         msg.pack()
         self.minimal_topo()
 
-        top.mainloop()
+        top1.mainloop()
 
     def tutorial_2(self):
         setLogLevel('info')
@@ -349,6 +418,7 @@ class App:
         self.rectangle_topo()
 
         #Next Step: Make sure all the options above work
+
 
 root = Tk()
 root.title("Simple Mininet UI")
