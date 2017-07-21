@@ -29,28 +29,77 @@ class App:
 
     def __init__(self, master):
         #main screen goes here
-        w = Label(root, text="Choose from the available topology")
+        w = Label(root, text="Choose from the available topology. Right click each for details")
         w.pack()
         frame = Frame(master)
         frame.pack()
 
-        self.button = Button(
-            frame, text="QUIT", fg="red", command=frame.quit
+        quitButton = Button(
+            frame, text="QUIT", fg="red"
             )
-        self.button.pack(side=LEFT)
+        quitButton.pack(side=LEFT)
 
-        self.minimal_Button = Button(frame, text="Minimal", command=self.minimal_topo)
-        self.minimal_Button.pack(side=LEFT)
-        self.linear_Button = Button(frame, text="Linear", command=self.linear_topo)
-        self.linear_Button.pack(side=LEFT)
-        self.tree_Button = Button(frame, text="Tree", command=self.tree_topo)
-        self.tree_Button.pack(side=LEFT)
-        self.torus_Button = Button(frame, text="Torus", command=self.torus_topo)
-        self.torus_Button.pack(side=LEFT)
-        self.reversed_Button = Button(frame, text="Reversed", command=self.reversed_switch)
-        self.reversed_Button.pack(side=LEFT)
-        self.tutorial_Button = Button(frame, text="Tutorials", command=self.tutorial)
-        self.tutorial_Button.pack(side=LEFT)
+        minimalButton = Button(frame, text="Minimal", command=self.minimal_topo)
+        minimalButton.pack(side=LEFT)
+        linearButton = Button(frame, text="Linear", command=self.linear_topo)
+        linearButton.pack(side=LEFT)
+        treeButton = Button(frame, text="Tree", command=self.tree_topo)
+        treeButton.pack(side=LEFT)
+        torusButton = Button(frame, text="Torus", command=self.torus_topo)
+        torusButton.pack(side=LEFT)
+        reversedButton = Button(frame, text="Reversed", command=self.reversed_switch)
+        reversedButton.pack(side=LEFT)
+        tutorialButton = Button(frame, text="Tutorials", command=self.tutorial)
+        tutorialButton.pack(side=LEFT)
+
+        def left_quit(event):
+            frame.quit
+        def right_quit(event):
+            msg.showinfo("Help","Quit the program.")
+        quitButton.bind('<Button-1>', left_quit)   # bind left mouse click
+        quitButton.bind('<Button-3>', right_quit)  # bind right mouse click
+
+        def left_minimal(event):
+            self.minimal_topo
+        def right_minimal(event):
+            msg.showinfo("Help","Minimal topology is a topology with two host connected to one switch.")
+        minimalButton.bind('<Button-1>', left_minimal)   # bind left mouse click
+        minimalButton.bind('<Button-3>', right_minimal)  # bind right mouse click
+
+        def left_tree(event):
+            self.tree_topo
+        def right_tree(event):
+            msg.showinfo("Help","Tree topology is a topology where each level branches x number of node until y depth.")
+        treeButton.bind('<Button-1>', left_tree)   # bind left mouse click
+        treeButton.bind('<Button-3>', right_tree)  # bind right mouse click
+
+        def left_linear(event):
+            self.linear_topo
+        def right_linear(event):
+            msg.showinfo("Help","Linear topology is a topology with one host connected to each switch, which forms a line.")
+        linearButton.bind('<Button-1>', left_linear)   # bind left mouse click
+        linearButton.bind('<Button-3>', right_linear)  # bind right mouse click
+
+        def left_torus(event):
+            self.torus_topo
+        def right_torus(event):
+            msg.showinfo("Help","Torus topology is a topology where one host connected to three other hosts in a rectangle shape.")
+        torusButton.bind('<Button-1>', left_torus)   # bind left mouse click
+        torusButton.bind('<Button-3>', right_torus)  # bind right mouse click
+
+        def left_reversed(event):
+            self.reversed_switch
+        def right_reversed(event):
+            msg.showinfo("Help","Reversed topology is a topology where the lowest numbered host connects to the highest port.")
+        reversedButton.bind('<Button-1>', left_reversed)   # bind left mouse click
+        reversedButton.bind('<Button-3>', right_reversed)  # bind right mouse click
+        
+        def left_tutorial(event):
+            self.tutorial
+        def right_tutorial(event):
+            msg.showinfo("Help","This button shows available tutorials or testing scenarios.")
+        tutorialButton.bind('<Button-1>', left_tutorial)   # bind left mouse click
+        tutorialButton.bind('<Button-3>', right_tutorial)  # bind right mouse click
 
         #topologies goes here
 
@@ -155,48 +204,261 @@ class App:
 
     def options(self, net):
         topopt = Toplevel()
-        topopt.title("Mininet Toolbox")
+        topopt.title("Mininet Toolbox. Right click each button for info")
 
-        self.button = Button(
-            topopt, text="QUIT", fg="red", command=topopt.quit
-            ).grid(row=10, column=5)
+        quitButton = Button(
+            topopt, text="QUIT", fg="red", command=topopt.quit)
+        quitButton.grid(row=10, column=5)
 
 
-        self.ping_Button = Button(topopt, text="Ping", width=10, command=lambda: self.ping_node(net)).grid(row=0)
-        self.ping_pair_Button = Button(topopt, text="Ping Pair", width=10, command=lambda: self.ping_pair(net)).grid(row=0,column=1)
-        self.ping_pairfull_Button = Button(topopt, text="Ping Pair Full", width=10, command=lambda: self.ping_pair_full(net)).grid(row=0, column=2)
-        self.ping_full_Button = Button(topopt, text="Ping Full", width=10, command=lambda: self.ping_full(net)).grid(row=0,column=3)
-        self.ping_all_Button = Button(topopt, text="Ping All", width=10, command=lambda: self.ping_all(net)).grid(row=0,column=4)
-        self.ping_allfull_Button = Button(topopt, text="Ping All Full", width=10, command=lambda: self.ping_all_full(net)).grid(row=0,column=5)
-        self.bw_Button = Button(topopt, text="Bandwidth", width=10, command=lambda: self.set_bandwidth(net)).grid(row=1)
-        self.delay_Button = Button(topopt, text="Delay", width=10, command=lambda: self.set_delay(net)).grid(row=2)
-        self.jitter_Button = Button(topopt, text="Jitter", width=10, command=lambda: self.set_jitter(net)).grid(row=3)
-        self.loss_Button = Button(topopt, text="Loss",width=10, command=lambda: self.set_loss(net)).grid(row=4)
-        self.IP_Button = Button(topopt, text="Set IP",width=10, command=lambda: self.set_IP(net)).grid(row=1, column=1)
-        self.MAC_Button = Button(topopt, text="Set MAC",width=10, command=lambda: self.set_MAC(net)).grid(row=2, column=1)
-        self.link_Button = Button(topopt, text="Up/Down Link",width=10, command=lambda: self.set_link(net)).grid(row=3, column=1)
-        self.host_Button = Button(topopt, text="Add Host",width=10, command=lambda: self.add_host(net)).grid(row=4, column=1)
-        self.switch_Button = Button(topopt, text="Add Switch",width=10, command=lambda: self.add_switch(net)).grid(row=1, column=2)
-        self.iperf_Button = Button(topopt, text="Do iperf",width=10, command=lambda: self.start_iperf(net)).grid(row=2, column=2)
-        self.iperfudp_Button = Button(topopt, text="Do iperfudp",width=10, command=lambda: self.start_iperfudp(net)).grid(row=3, column=2)
-        self.node_Button = Button(topopt, text="Node List", width=10, command=lambda: self.show_nodes(net)).grid(row=2, column=3)
-        self.dump_Button = Button(topopt, text="Dump Nodes", width=10, command=lambda: self.dump_nodes(net)).grid(row=3, column=3)
-        self.addhost_Button = Button(topopt, text="Add Host", width=10, command=lambda: self.add_host(net)).grid(row=1, column=3)
-        self.addswitch_Button = Button(topopt, text="Add Switch", width=10, command=lambda: self.add_switch(net)).grid(row=1, column=4)
-        self.addnat_Button = Button(topopt, text="Add NAT", width=10, command=lambda: self.add_NAT(net)).grid(row=2, column=4)
-        self.addctrl_Button = Button(topopt, text="Add Controller", width=10, command=lambda: self.add_Controller(net)).grid(row=3, column=4)
-        self.addlink_Button = Button(topopt, text="Add Link", width=10, command=lambda: self.add_link(net)).grid(row=4, column=4)
-        self.dellink_Button = Button(topopt, text="Delete Link", width=10, command=lambda: self.delete_link(net)).grid(row=5, column=4)
-        self.stopswitch_Button = Button(topopt, text="Stop Switch", width=10, command=lambda: self.stop_switch(net)).grid(row=6, column=4)
-        self.delnode_Button = Button(topopt, text="Delete Node", width=10, command=lambda: self.del_node(net)).grid(row=7, column=4)
+        pingButton = Button(topopt, text="Ping", width=10)
+        pingButton.grid(row=0)
+        pingpairButton = Button(topopt, text="Ping Pair", width=10)
+        pingpairButton.grid(row=0,column=1)
+        pingpairfullButton = Button(topopt, text="Ping Pair Full", width=10)
+        pingpairfullButton.grid(row=0, column=2)
+        pingfullButton = Button(topopt, text="Ping Full", width=10)
+        pingfullButton.grid(row=0,column=3)
+        pingAllButton = Button(topopt, text="Ping All", width=10)
+        pingAllButton.grid(row=0,column=4)
+        pingAllfullButton = Button(topopt, text="Ping All Full", width=10)
+        pingAllfullButton.grid(row=0,column=5)
+        bwButton = Button(topopt, text="Bandwidth", width=10)
+        bwButton.grid(row=1)
+        delayButton = Button(topopt, text="Delay", width=10)
+        delayButton.grid(row=2)
+        jitterButton = Button(topopt, text="Jitter", width=10)
+        jitterButton.grid(row=3)
+        lossButton = Button(topopt, text="Loss",width=10)
+        lossButton.grid(row=4)
+        IPButton = Button(topopt, text="Set IP",width=10)
+        IPButton.grid(row=1, column=1)
+        MACButton = Button(topopt, text="Set MAC",width=10)
+        MACButton.grid(row=2, column=1)
+        linkButton = Button(topopt, text="Up/Down Link",width=10)
+        linkButton.grid(row=3, column=1)
+        hostButton = Button(topopt, text="Add Host",width=10)
+        hostButton.grid(row=1, column=3)
+        switchButton = Button(topopt, text="Add Switch",width=10)
+        switchButton.grid(row=1, column=2)
+        iperfButton = Button(topopt, text="Do iperf",width=10)
+        iperfButton.grid(row=2, column=2)
+        iperfudpButton = Button(topopt, text="Do iperfudp",width=10)
+        iperfudpButton.grid(row=3, column=2)
+        nodeButton = Button(topopt, text="Node List", width=10)
+        nodeButton.grid(row=2, column=3)
+        dumpButton = Button(topopt, text="Dump Nodes", width=10)
+        dumpButton.grid(row=3, column=3)
+        addnatButton = Button(topopt, text="Add NAT", width=10)
+        addnatButton.grid(row=1, column=4)
+        addctrlButton = Button(topopt, text="Add Controller")
+        addctrlButton.grid(row=2, column=4)
+        addlinkButton = Button(topopt, text="Add Link", width=10)
+        addlinkButton.grid(row=3, column=4)
+        dellinkButton = Button(topopt, text="Delete Link", width=10)
+        dellinkButton.grid(row=4, column=4)
+        stopswitchButton = Button(topopt, text="Stop Switch", width=10)
+        stopswitchButton.grid(row=5, column=4)
+        delnodeButton = Button(topopt, text="Delete Node", width=10)
+        delnodeButton.grid(row=6, column=4)
 
-        self.cli_Button = Button(topopt, text="CLI", fg = "blue", width=5,command=lambda: CLI(net)).grid(row=10, column=0)
+        cliButton = Button(topopt, text="CLI", fg = "blue", width=5,command=lambda: CLI(net))
+        cliButton.grid(row=10, column=0)
+
+        #CLICK EVENTS GOES HERE.
+        def left_ping(event):
+            self.ping_node(net)
+        def right_ping(event):
+            msg.showinfo("Help","Ping button is used to test connection to another host.")
+        pingButton.bind('<Button-1>', left_ping)   # bind left mouse click
+        pingButton.bind('<Button-3>', right_ping)  # bind right mouse click
+
+        def left_ping_pair(event):
+            self.ping_pair(net)
+        def right_ping_pair(event):
+            msg.showinfo("Help","Ping pair button is used to test connection between the first two hosts.")
+        pingpairButton.bind('<Button-1>', left_ping_pair)   # bind left mouse click
+        pingpairButton.bind('<Button-3>', right_ping_pair)  # bind right mouse click
+        
+        def left_ping_pair_full(event):
+            self.ping_pair_full(net)
+        def right_ping_pair_full(event):
+            msg.showinfo("Help","Ping pair full button is used to test connection between the first two hosts with details.")
+        pingpairfullButton.bind('<Button-1>', left_ping_pair_full)   # bind left mouse click
+        pingpairfullButton.bind('<Button-3>', right_ping_pair_full)  # bind right mouse click
+
+        def left_ping_full(event):
+            self.ping_full(net)
+        def right_ping_full(event):
+            msg.showinfo("Help","Ping pair full button is used to test connection between two hosts with details.")
+        pingfullButton.bind('<Button-1>', left_ping_full)   # bind left mouse click
+        pingfullButton.bind('<Button-3>', right_ping_full)  # bind right mouse click
+
+        def left_ping_all(event):
+            self.ping_all(net)
+        def right_ping_all(event):
+            msg.showinfo("Help","Ping all button is used to test connection between all connected hosts.")
+        pingAllButton.bind('<Button-1>', left_ping_all)   # bind left mouse click
+        pingAllButton.bind('<Button-3>', right_ping_all)  # bind right mouse click
+
+        def left_ping_all_full(event):
+            self.ping_all_full(net)
+        def right_ping_all_full(event):
+            msg.showinfo("Help","Ping all full button is used to test connection between all connected hosts with details.")
+        pingAllfullButton.bind('<Button-1>', left_ping_all_full)   # bind left mouse click
+        pingAllfullButton.bind('<Button-3>', right_ping_all_full)  # bind right mouse click
+
+        def left_bw(event):
+            self.set_bandwidth(net)
+        def right_bw(event):
+            msg.showinfo("Help","Bandwidth is used to change the bandwidth of a link.")
+        bwButton.bind('<Button-1>', left_bw)   # bind left mouse click
+        bwButton.bind('<Button-3>', right_bw)  # bind right mouse click
+
+        def left_delay(event):
+            self.set_delay(net)
+        def right_delay(event):
+            msg.showinfo("Help","Delay is used to change the delay of a link.")
+        delayButton.bind('<Button-1>', left_delay)   # bind left mouse click
+        delayButton.bind('<Button-3>', right_delay)  # bind right mouse click
+
+        def left_jitter(event):
+            self.set_jitter(net)
+        def right_jitter(event):
+            msg.showinfo("Help","Jitter is used to change the jitter of a link.")
+        jitterButton.bind('<Button-1>', left_jitter)   # bind left mouse click
+        jitterButton.bind('<Button-3>', right_jitter)  # bind right mouse click
+
+        def left_loss(event):
+            self.set_loss(net)
+        def right_loss(event):
+            msg.showinfo("Help","Loss is used to change the loss of a link.")
+        lossButton.bind('<Button-1>', left_loss)   # bind left mouse click
+        lossButton.bind('<Button-3>', right_loss)  # bind right mouse click
+
+        def left_IP(event):
+            self.set_IP(net)
+        def right_IP(event):
+            msg.showinfo("Help","Set IP is used to change the IP of a node.")
+        IPButton.bind('<Button-1>', left_IP)   # bind left mouse click
+        IPButton.bind('<Button-3>', right_IP)  # bind right mouse click
+
+        def left_MAC(event):
+            self.set_MAC(net)
+        def right_MAC(event):
+            msg.showinfo("Help","Set MAC is used to change the MAC of a node.")
+        MACButton.bind('<Button-1>', left_MAC)   # bind left mouse click
+        MACButton.bind('<Button-3>', right_MAC)  # bind right mouse click
+
+        def left_link(event):
+            self.set_link(net)
+        def right_link(event):
+            msg.showinfo("Help","Set Link is used to up/down a link.")
+        linkButton.bind('<Button-1>', left_link)   # bind left mouse click
+        linkButton.bind('<Button-3>', right_link)  # bind right mouse click
+
+        def left_host(event):
+            self.add_host(net)
+        def right_host(event):
+            msg.showinfo("Help","Add Host is used to add a host node.")
+        hostButton.bind('<Button-1>', left_host)   # bind left mouse click
+        hostButton.bind('<Button-3>', right_host)  # bind right mouse click
+
+        def left_switch(event):
+            self.add_switch(net)
+        def right_switch(event):
+            msg.showinfo("Help","Add Switch is used to add a switch node.")
+        switchButton.bind('<Button-1>', left_switch)   # bind left mouse click
+        switchButton.bind('<Button-3>', right_switch)  # bind right mouse click
+
+        def left_iperf(event):
+            self.start_iperf(net)
+        def right_iperf(event):
+            msg.showinfo("Help","Do iperf is used to perform TCP Bandwidth measurement between two hosts.")
+        iperfButton.bind('<Button-1>', left_iperf)   # bind left mouse click
+        iperfButton.bind('<Button-3>', right_iperf)  # bind right mouse click
+
+        def left_iperfudp(event):
+            self.start_iperfudp(net)
+        def right_iperfudp(event):
+            msg.showinfo("Help","Do iperfudp is used to perform UDP Bandwidth measurement between two hosts.")
+        iperfudpButton.bind('<Button-1>', left_iperfudp)   # bind left mouse click
+        iperfudpButton.bind('<Button-3>', right_iperfudp)  # bind right mouse click
+
+        def left_node(event):
+            self.show_nodes(net)
+        def right_node(event):
+            msg.showinfo("Help","Node List shows all nodes in the currently used topology.")
+        nodeButton.bind('<Button-1>', left_node)   # bind left mouse click
+        nodeButton.bind('<Button-3>', right_node)  # bind right mouse click
+
+        def left_dump(event):
+            self.dump_nodes(net)
+        def right_dump(event):
+            msg.showinfo("Help","Dump Node shows the details of all nodes in the currently used topology.")
+        dumpButton.bind('<Button-1>', left_dump)   # bind left mouse click
+        dumpButton.bind('<Button-3>', right_dump)  # bind right mouse click
+
+        def left_nat(event):
+            self.add_NAT(net)
+        def right_nat(event):
+            msg.showinfo("Help","Add NAT is used to add a Network Address Translation to a node.")
+        addnatButton.bind('<Button-1>', left_nat)   # bind left mouse click
+        addnatButton.bind('<Button-3>', right_nat)  # bind right mouse click
+
+        def left_ctrl(event):
+            self.add_Controller(net)
+        def right_ctrl(event):
+            msg.showinfo("Help","Add Controller is used to add an Open VSwitch Controller.")
+        addctrlButton.bind('<Button-1>', left_ctrl)   # bind left mouse click
+        addctrlButton.bind('<Button-3>', right_ctrl)  # bind right mouse click
+
+        def left_add_link(event):
+            self.add_link(net)
+        def right_add_link(event):
+            msg.showinfo("Help","Add Link is used to add a link: Connection between two nodes.")
+        addlinkButton.bind('<Button-1>', left_add_link)   # bind left mouse click
+        addlinkButton.bind('<Button-3>', right_add_link)  # bind right mouse click
+
+        def left_del_link(event):
+            self.delete_link(net)
+        def right_del_link(event):
+            msg.showinfo("Help","Delete Link is used to delete link between two nodes.")
+        dellinkButton.bind('<Button-1>', left_del_link)   # bind left mouse click
+        dellinkButton.bind('<Button-3>', right_del_link)  # bind right mouse click
+
+        def left_stopswitch(event):
+            self.stop_switch(net)
+        def right_stopswitch(event):
+            msg.showinfo("Help","Stop Switch is used to stop a working switch.")
+        stopswitchButton.bind('<Button-1>', left_stopswitch)   # bind left mouse click
+        stopswitchButton.bind('<Button-3>', right_stopswitch)  # bind right mouse click
+
+        def left_delnode(event):
+            self.del_node(net)
+        def right_delnode(event):
+            msg.showinfo("Help","Delete Node is used to remove node from the currently used topology.")
+        delnodeButton.bind('<Button-1>', left_delnode)   # bind left mouse click
+        delnodeButton.bind('<Button-3>', right_delnode)  # bind right mouse click
+
+        def left_CLI(event):
+            CLI(net)
+        def right_CLI(event):
+            msg.showinfo("Help","Command Line Interface to run Mininet and OpenFlow directly.")
+        cliButton.bind('<Button-1>', left_CLI)   # bind left mouse click
+        cliButton.bind('<Button-3>', right_CLI)  # bind right mouse click
+
+        def left_quit(event):
+            topopt.quit
+        def right_quit(event):
+            msg.showinfo("Help","Quit the program.")
+        quitButton.bind('<Button-1>', left_quit)   # bind left mouse click
+        quitButton.bind('<Button-3>', right_quit)  # bind right mouse click
+
 
         topopt.mainloop()
 
         #utilities goes here
-
-    #def getNodeByName(self):
 
     def ping_node(self,net):
 
@@ -611,6 +873,8 @@ class App:
     # def ifHost(self,cnode,net):
 
     # def ifSwitch(self,cnode,net):
+    
+        #Help messages goes here.
 
     
 
