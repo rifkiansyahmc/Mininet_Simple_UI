@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
 from Tkinter import *
+from tkSimpleDialog import *
+from tkMessageBox import *
+import tkSimpleDialog
+import tkMessageBox
 from CustomSwitchHostTopo import CustomSwitchHostTopo
 from RectangleTopo import RectangleTopo
 from mininet.net import Mininet
@@ -17,8 +21,11 @@ from mininet.link import TCIntf
 from mininet.link import Intf
 from mininet.link import Link
 
+sdk = tkSimpleDialog
+msg = tkMessageBox
 
 class App:
+
 
     def __init__(self, master):
         #main screen goes here
@@ -94,7 +101,7 @@ class App:
     def reversed_switch(self):
         setLogLevel('info')
         hCount = input('Enter number of hosts: ')
-        ReverseSingle = SingleSwitchReversedTopo(k = hCount)
+        ReverseSingle = SingleSwitchReversedTopo(k=hCount)
         net = Mininet(topo=ReverseSingle)
         net.start()
         print "Dumping host connections"
@@ -109,7 +116,17 @@ class App:
         net.start()
         print "Dumping host connections"
         dumpNodeConnections(net.hosts)
-        CLI(net)
+        option = self.options()
+        net.stop()
+
+    def twinpair_topo(self):
+        setLogLevel('info')
+        pair_topo = PairTopo()
+        net = Mininet(topo=rect_topo, controller=OVSController)
+        net.start()
+        print "Dumping host connections"
+        dumpNodeConnections(net.hosts)
+        option = self.options()
         net.stop()
 
         #tutorial menu goes here
@@ -123,6 +140,8 @@ class App:
             )
         self.button.pack(side=LEFT)
 
+        self.tutor0_Button = Button(topt, text="Tutorial 0", command=self.tutorial_0)
+        self.tutor0_Button.pack(side=LEFT)
         self.tutor1_Button = Button(topt, text="Tutorial 1", command=self.tutorial_1)
         self.tutor1_Button.pack(side=LEFT)
         self.tutor2_Button = Button(topt, text="Tutorial 2", command=self.tutorial_2)
@@ -136,124 +155,126 @@ class App:
 
     def options(self, net):
         topopt = Toplevel()
-        topopt.title("SDN Options Menu")
+        topopt.title("Mininet Toolbox")
 
         self.button = Button(
             topopt, text="QUIT", fg="red", command=topopt.quit
-            )
-        self.button.pack(side=LEFT)
+            ).grid(row=10, column=5)
 
-        self.ping_Button = Button(topopt, text="Ping", width=15, command=lambda: self.ping_node(net))
-        self.ping_Button.pack(side="top")
-        self.bw_Button = Button(topopt, text="Bandwidth", width=15, command=lambda: self.set_bandwidth(net))
-        self.bw_Button.pack(side="top")
-        self.delay_Button = Button(topopt, text="Delay", width=15, command=lambda: self.set_delay(net))
-        self.delay_Button.pack(side="top")
-        self.jitter_Button = Button(topopt, text="Jitter", width=15, command=lambda: self.set_jitter(net))
-        self.jitter_Button.pack(side="top")
-        self.loss_Button = Button(topopt, text="Loss",width=15, command=lambda: self.set_loss(net))
-        self.loss_Button.pack(side="top")
-        self.IP_Button = Button(topopt, text="Set IP",width=15, command=lambda: self.set_IP(net))
-        self.IP_Button.pack(side="top")
-        self.MAC_Button = Button(topopt, text="Set MAC",width=15, command=lambda: self.set_MAC(net))
-        self.MAC_Button.pack(side="top")
-        self.link_Button = Button(topopt, text="Up/Down Link",width=15, command=lambda: self.set_link(net))
-        self.link_Button.pack(side="top")
-        self.host_Button = Button(topopt, text="Add Host",width=15, command=lambda: self.add_host(net))
-        self.host_Button.pack(side="top")
-        self.switch_Button = Button(topopt, text="Add Switch",width=15, command=lambda: self.add_switch(net))
-        self.switch_Button.pack(side="top")
-        self.iperf_Button = Button(topopt, text="Do iperf",width=15, command=lambda: self.start_iperf(net))
-        self.iperf_Button.pack(side="top")
-        self.iperfudp_Button = Button(topopt, text="Do iperfudp",width=15, command=lambda: self.start_iperfudp(net))
-        self.iperfudp_Button.pack(side="top")
-        self.cli_Button = Button(topopt, text="CLI", width=15,command=lambda: CLI(net))
-        self.cli_Button.pack(side="top")
+
+        self.ping_Button = Button(topopt, text="Ping", width=10, command=lambda: self.ping_node(net)).grid(row=0)
+        self.ping_pair_Button = Button(topopt, text="Ping Pair", width=10, command=lambda: self.ping_pair(net)).grid(row=0,column=1)
+        self.ping_pairfull_Button = Button(topopt, text="Ping Pair Full", width=10, command=lambda: self.ping_pair_full(net)).grid(row=0, column=2)
+        self.ping_full_Button = Button(topopt, text="Ping Full", width=10, command=lambda: self.ping_full(net)).grid(row=0,column=3)
+        self.ping_all_Button = Button(topopt, text="Ping All", width=10, command=lambda: self.ping_all(net)).grid(row=0,column=4)
+        self.ping_allfull_Button = Button(topopt, text="Ping All Full", width=10, command=lambda: self.ping_all_full(net)).grid(row=0,column=5)
+        self.bw_Button = Button(topopt, text="Bandwidth", width=10, command=lambda: self.set_bandwidth(net)).grid(row=1)
+        self.delay_Button = Button(topopt, text="Delay", width=10, command=lambda: self.set_delay(net)).grid(row=2)
+        self.jitter_Button = Button(topopt, text="Jitter", width=10, command=lambda: self.set_jitter(net)).grid(row=3)
+        self.loss_Button = Button(topopt, text="Loss",width=10, command=lambda: self.set_loss(net)).grid(row=4)
+        self.IP_Button = Button(topopt, text="Set IP",width=10, command=lambda: self.set_IP(net)).grid(row=1, column=1)
+        self.MAC_Button = Button(topopt, text="Set MAC",width=10, command=lambda: self.set_MAC(net)).grid(row=2, column=1)
+        self.link_Button = Button(topopt, text="Up/Down Link",width=10, command=lambda: self.set_link(net)).grid(row=3, column=1)
+        self.host_Button = Button(topopt, text="Add Host",width=10, command=lambda: self.add_host(net)).grid(row=4, column=1)
+        self.switch_Button = Button(topopt, text="Add Switch",width=10, command=lambda: self.add_switch(net)).grid(row=1, column=2)
+        self.iperf_Button = Button(topopt, text="Do iperf",width=10, command=lambda: self.start_iperf(net)).grid(row=2, column=2)
+        self.iperfudp_Button = Button(topopt, text="Do iperfudp",width=10, command=lambda: self.start_iperfudp(net)).grid(row=3, column=2)
+        self.node_Button = Button(topopt, text="Node List", width=10, command=lambda: self.show_nodes(net)).grid(row=2, column=3)
+        self.dump_Button = Button(topopt, text="Dump Nodes", width=10, command=lambda: self.dump_nodes(net)).grid(row=3, column=3)
+        self.addhost_Button = Button(topopt, text="Add Host", width=10, command=lambda: self.add_host(net)).grid(row=1, column=3)
+        self.addswitch_Button = Button(topopt, text="Add Switch", width=10, command=lambda: self.add_switch(net)).grid(row=1, column=4)
+        self.addnat_Button = Button(topopt, text="Add NAT", width=10, command=lambda: self.add_NAT(net)).grid(row=2, column=4)
+        self.addctrl_Button = Button(topopt, text="Add Controller", width=10, command=lambda: self.add_Controller(net)).grid(row=3, column=4)
+        self.addlink_Button = Button(topopt, text="Add Link", width=10, command=lambda: self.add_link(net)).grid(row=4, column=4)
+        self.dellink_Button = Button(topopt, text="Delete Link", width=10, command=lambda: self.delete_link(net)).grid(row=5, column=4)
+        self.stopswitch_Button = Button(topopt, text="Stop Switch", width=10, command=lambda: self.stop_switch(net)).grid(row=6, column=4)
+        self.delnode_Button = Button(topopt, text="Delete Node", width=10, command=lambda: self.del_node(net)).grid(row=7, column=4)
+
+        self.cli_Button = Button(topopt, text="CLI", fg = "blue", width=5,command=lambda: CLI(net)).grid(row=10, column=0)
+
         topopt.mainloop()
-
-        #while True:
-        #    print "What would you like to do?"
-        #    print "1. Set Bandwidth"
-        #    print "2. Set Delay"
-        #    print "3. Set Jitter"
-        #    print "4. Set Loss"
-        #    print "5. Set IP"
-        #    print "6. Set MAC"
-        #    print "7. Up/Down Link"
-        #    print "0. Open CLI" #Due to new path, use it extensively.
-        #    print "Type 'exit' to exit program."
-
-        #    choice = raw_input()
-        #    if choice == "1":
-        #        self.set_bandwidth(net)
-        #    elif choice == "2":
-        #        self.set_delay(net)
-        #    elif choice == "3":
-        #        self.set_jitter(net)
-        #    elif choice == "4":
-        #        self.set_loss(net)
-        #    elif choice == "5":
-        #        self.set_IP(net)
-        #    elif choice == "6":
-        #        self.set_MAC(net)
-        #    elif choice == "7":
-        #        self.set_link(net)
-        #    elif choice == "0":
-        #        CLI(net)
-        #        break
 
         #utilities goes here
 
     #def getNodeByName(self):
 
     def ping_node(self,net):
-        currenth1=raw_input("Please enter node 1: ")
-        currenth2=raw_input("Please enter node 2: ")
+
+        currenth1=sdk.askstring("Ping Node","Please enter node 1: ")
+        if currenth1 not in net.keys():
+            currenth1 = self.check_node(currenth1,net)
+        currenth2=sdk.askstring("Ping Node","Please enter node 2: ")
+        if currenth2 not in net.keys() or currenth2 == currenth1:
+            currenth2 = self.check_node2(currenth2,net,currenth1)
         h = ['h1','h2']
         h[0] = net.get(currenth1)
         h[1] = net.get(currenth2)
         net.ping(h)
 
     def set_bandwidth(self, net):
-        currentn1=raw_input("Please enter node 1 of the link: ")
-        currentn2=raw_input("Please enter node 2 of the link: ")
+        print "Set Bandwidth"
+        currentn1=sdk.askstring("Set Bandwidth","Please enter node 1: ")
+        if currentn1 not in net.keys():
+            currentn1 = self.check_node(currentn1,net)
+        currentn2=sdk.askstring("Set Bandwidth","Please enter node 2: ")
+        if currentn2 not in net.keys() or currentn2 == currentn1:
+            currentn2 = self.check_node2(currentn2,net,currentn1)
         b1 = net.get(currentn1)
         b2 = net.get(currentn2)
-        newbw=raw_input("Please enter the desired bandwidth(b/s): ")
+        newbw=sdk.askstring("New Bandwidth","Please enter the desired bandwidth(b/s): ")
         links = b1.connectionsTo(b2)
         srcLink = links[0][1]
         dstLink = links[0][1]
         srcLink.config(**{ 'bw' : newbw})
         dstLink.config(**{ 'bw' : newbw})
+        print srcLink.config()
         print "The new bandwidth is ", srcLink.config('bw')
+
     def set_delay(self, net):
-        currentd1=raw_input("Please enter node 1 you want to change: ")
-        currentd2=raw_input("Please enter node 2 you want to change: ")
+        print "Set delay"
+        currentd1=sdk.askstring("Set Delay","Please enter node 1: ")
+        if currentd1 not in net.keys():
+            currentd1 = self.check_node(currentd1,net)
+        currentd2=sdk.askstring("Set Delay","Please enter node 2: ")
+        if currentd2 not in net.keys() or currentd2 == currentd1:
+            currentd2 = self.check_node2(currentd2,net,currentd1)
         d1 = net.get(currentd1)
         d2 = net.get(currentd2)
-        newdelay=raw_input("Please enter the desired delay: ")
+        newdelay=sdk.askstring("New Delay","Please enter the desired delay: ")
         links = d1.connectionsTo(d2)
         srcLink = links[0][1]
         dstLink = links[0][1]
         srcLink.config(**{ 'delay' : newdelay})
         dstLink.config(**{ 'delay' : newdelay})
+
     def set_jitter(self, net):
-        currentj1=raw_input("Please enter node 1 you want to change: ")
-        currentj2=raw_input("Please enter node 2 you want to change: ")
+        print "Set jitter"
+        currentj1=sdk.askstring("Set Jitter","Please enter node 1: ")
+        if currentj1 not in net.keys():
+            currentj1 = self.check_node(currentj1,net)
+        currentj2=sdk.askstring("Set Jitter","Please enter node 2: ")
+        if currentj2 not in net.keys() or currentj2 == currentj1:
+            currentj2 = self.check_node2(currentj2,net,currentj1)
         j1 = net.get(currentj1)
         j2 = net.get(currentj2)
-        newjitter=raw_input("Please enter the desired jitter: ")
+        newjitter=sdk.askstring("New Jitter","Please enter the desired jitter: ")
         links = j1.connectionsTo(j2)
         srcLink = links[0][1]
         dstLink = links[0][1]
         srcLink.config(**{ 'jitter' : newjitter})
         dstLink.config(**{ 'jitter' : newjitter})
+
     def set_loss(self, net):
-        currentl1=raw_input("Please enter node 1 you want to change: ")
-        currentl2=raw_input("Please enter node 2 you want to change: ")
+        print "Set loss"
+        currentj1=sdk.askstring("Set Loss","Please enter node 1: ")
+        if currentl1 not in net.keys():
+            currentl1 = self.check_node(currentl1,net)
+        currentl2=sdk.askstring("Set Loss","Please enter node 2: ")
+        if currentl2 not in net.keys() or currentl2 == currentl1:
+            currentl2 = self.check_node2(currentl2,net,currentl1)
         l1 = net.get(currentl1)
         l2 = net.get(currentl2)
-        newloss=raw_input("Please enter the desired loss: ")
+        newloss=sdk.askstring("New Loss","Please enter the desired loss: ")
         links = l1.connectionsTo(l2)
         srcLink = links[0][1]
         dstLink = links[0][1]
@@ -261,67 +282,221 @@ class App:
         dstLink.config(**{ 'loss' : newloss})
 
     def set_IP(self, net):
-        currentIP=raw_input("Please enter the node you want to change: ")
+        print "Set IP"
+        currentIP=sdk.askstring("Set IP","Please enter node 1: ")
+        if currentIP not in net.keys():
+            currentIP = self.check_node(currentIP,net)
         i = net.get(currentIP)
-        newi=raw_input("Please enter the desired IP: ")
+        newi=sdk.askstring("New IP","Please enter the desired IP: ")
         i.setIP(ip=newi)
         print "The new IP is:", i.IP()
     def set_MAC(self, net):
-        currentMAC=raw_input("Please enter the node you want to change: ")
+        currentMAC=sdk.askstring("Set MAC","Please enter node 1: ")
+        if currentMAC not in net.keys():
+            currentMAC = self.check_node(currentMAC,net)
         m = net.get(currentMAC)
-        newm=raw_input("Please enter the desired MAC: ")
+        newm=sdk.askstring("New MAC","Please enter the desired MAC: ")
         m.setMAC(newm)
         print "The new MAC is:", i.MAC()
 
-    def set_link(self, net):
-        print "1. Up Link"
-        print "2. Down Link"
-        link_opt = raw_input("Which option do you want to do? ")
+    def set_link(self, net):   
+        msg.showwarning("1. Up Link. 2. Down Link")
+        link_opt = sdk.askinteger("Link Options","What do you want to do? ")
         if link_opt=="1":
             print ("Enter the nodes you want to link: ")
-            link_1 = raw_input()
-            host1 = net.get(link_1)
-            link_2 = raw_input()
-            host2 = net.get(link_2)
-            Link1=net.Link(host1,host2)
+            link1=sdk.askstring("Up Link","Please enter node 1: ")
+            if link1 not in net.keys():
+                link1 = self.check_node(link1,net)
+            link2=sdk.askstring("Up Link","Please enter node 2: ")
+            if link2 not in net.keys() or link2 == link1:
+                link2 = self.check_node2(link2,net,link1)
+            node1 = net.get(link1)
+            node2 = net.get(link2)
+            Link1=net.configLinkStatus(node1,node2, 'up')
         if link_opt=="2":
-            delete1 = raw_input("Enter 1st node with link you want to delete: ")
-            delete2 = raw_input("Enter 2nd node with link you want to delete: ")
-            host1 = net.get(delete1)
-            host2 = net.get(delete2)
-            Link1=net.link(host1,host2)
-            Link1.delete()
+            down1=sdk.askstring("Down Link","Please enter node 1: ")
+            if down1 not in net.keys():
+                down1 = self.check_node(down1,net)
+            down2=sdk.askstring("Down Link","Please enter node 2: ")
+            if down2 not in net.keys() or down2 == down1:
+                down2 = self.check_node2(down2,net,down1)
+                node1 = net.get(down1)
+                node2 = net.get(down2)
+                down_link=net.configLinkStatus(node1,node2, 'down')
+        else: 
+            msg.showwarning("Please choose one of the options: ")
+            set_link(self,net)
+
+
+    def add_link(self,net):
+        print "Add link"
+        bw = 10000
+        delay = 10
+        source=sdk.askstring("Source","Please enter source node: ")
+        if source not in net.keys():
+            source = self.check_node(source,net)
+        dest=sdk.askstring("Destination","Please destination node: ")
+        if dest not in net.keys() or dest == source:
+            dest = self.check_node2(dest,net,source)
+        bw_input = sdk.askstring("Bandwidth","Enter the desired bandwidth(default 10 GB): ")
+        if (bw_input is not None):
+            bw_input = bw
+        else: bw = bw
+        delay_input = sdk.askstring("Delay", "Enter the desired delay(default 10ms): ")
+        if (delay_input is not None):
+            delay_input = delay
+        else: delay = delay
+        node1 = net.get(source)
+        node2 = net.get(dest)
+        net.addLink(node1,node2,bw,delay)
 
     def add_host(self,net):
-        hostname = raw_input("Enter name of host: ")
-        self.addHost(hostname)
+        print "Add host"
+        hostname = sdk.askstring("Add Host","Enter name of host: ")
+        net.addHost(name = hostname)
 
     def add_switch(self,net):
-        switchname = raw_input("Enter name of switch: ")
-        self.addSwitch(switchname)
+        print "Add switch"
+        switchname = sdk.askstring("Add Switch","Enter name of switch: ")
+        net.addSwitch(name = switchname)
+
+    def add_NAT(self,net):
+        print "Add NAT"
+        natname = sdk.askstring("Add NAT","Enter NAT name: ")
+        connectTo = sdk.askstring("Switch Connect", "Enter Switch to connect to: ")
+        net.addNAT(name = natname,connect = connectTo)
+
+    def add_Controller(self,net):
+        print "Add Controller"
+        ctrlName = sdk.askstring("Add Controller","Enter Controller name: ")
+        net.addController(name=ctrlName,
+                          controller=OVSController,
+                          protocol=controllerProtocol,
+                          port=controllerPort)
+
+    def delete_link(self,net):
+        print "Delete link"
+        currentn1 = sdk.askstring("Delete Link","Enter node 1 to delete link: ")
+        if currentn1 not in net.keys():
+            currentn1 = self.check_node(currentn1,net)
+        currentn2 = sdk.askstring("Delete Link","Enter node 2 to delete link: ")
+        if currentn2 not in net.keys() or currentn2 == currentn1:
+            currentn2 = self.check_node2(currentn2,net,currentn1)
+        node1 = net.get(currentn1)
+        node2 = net.get(currentn2)
+        net.delLinkBetween(node1,node2)
+
+    def stop_switch(self,net):
+        print "Stop switch"
+        currents = sdk.askstring("Stop Switch","Enter switch to stop: ")
+        if currents not in net.keys():
+            currents = self.check_node(currents,net)
+        switch1 = net.get(currents)
+        net.stop(switch1)
+
+    def del_node(self,net):
+        print "Delete node"
+        currentn = sdk.askstring("Delete Node","Enter node to delete: ")
+        if currentn not in net.keys():
+            currentn = self.check_node(currentn,net)
+        node1 = net.get(currentn)
+        net.delNode(node1)
 
     def start_iperf(self,net):
-        currenth1=raw_input("Please enter node 1: ")
-        currenth2=raw_input("Please enter node 2: ")
+        currenth1 = sdk.askstring("Iperf","Enter node 1 to iperf: ")
+        if currenth1 not in net.keys():
+            currenth1 = self.check_node(currents,net)
+        currenth2 = sdk.askstring("Iperf","Enter node 2 to iperf: ")
+        if currenth2 not in net.keys() or currenth2 == currenth1:
+            currenth2 = self.check_node2(currenth2,net,currenth1)
         h = ['h1','h2']
         h[0] = net.get(currenth1)
         h[1] = net.get(currenth2)
         net.iperf(h)
 
     def start_iperfudp(self,net):
-        currenth1=raw_input("Please enter node 1: ")
-        currenth2=raw_input("Please enter node 2: ")
-        bw=raw_input("Please enter UDP Bandwidth: ")
+        currenth1 = sdk.askstring("IperfUDP","Enter node 1 to iperf: ")
+        if currenth1 not in net.keys():
+            currenth1 = self.check_node(currents,net)
+        currenth2 = sdk.askstring("IperfUDP","Enter node 2 to iperf: ")
+        if currenth2 not in net.keys() or currenth2 == currenth1:
+            currenth2 = self.check_node2(currenth2,net,currenth1)
+        bw=sdk.askstring("IperfUDP Bandwidth","Please enter UDP Bandwidth: ")
         h = ['h1','h2']
         h[0] = net.get(currenth1)
         h[1] = net.get(currenth2)
         net.iperf(h, l4Type='UDP',udpBw=bw)
 
+    def ping_pair(self,net):
+        net.pingPair()
+
+    def ping_pair_full(self,net):
+        net.pingPairFull()
+
+    def ping_full(self,net):
+        currenth1 = sdk.askstring("Ping Full","Enter node 1 to ping full: ")
+        if currenth1 not in net.keys():
+            currenth1 = self.check_node(currents,net)
+        currenth2 = sdk.askstring("Ping Full","Enter node 2 to ping full: ")
+        if currenth2 not in net.keys() or currenth2 == currenth1:
+            currenth2 = self.check_node2(currenth2,net,currenth1)
+        h = ['h1','h2']
+        h[0] = net.get(currenth1)
+        h[1] = net.get(currenth2)
+        net.pingFull(h)
+
+    def ping_all(self,net):
+        net.pingAll()
+
+    def ping_all_full(self,net):
+        net.pingAllFull()
+
+    def show_nodes(self,net): #show all nodes on net
+        print "Available nodes:"
+        print net.keys()
+
+    def dump_nodes(self,net): #dump info of all nodes
+        print "Dumping nodes:"
+        print net.values()
+
+    def dpctl_use(self,net):
+        param = sdk.askstring("Enter the dpctl function you want to use: ")
+
+    def xterm(self,net):
+        node = sdk.askstring("Enter the node to open xterm: ")
+
+    #def ofctl_cmd(self,net): #use dpctl commands
+
+    #def turn_switch(self,net): #turn switch on or off
+
+    #def show_ports(self,net): #mininet dump
+    #self.intfList(net)?
+
+    #def show_interface(self,net): #mininet intfs
+    #intfNames(net)?
+
+    #def show_net(self,net): #show connected intfs
+    
+    
+
         #tutorial instructions goes here
+
+    def tutorial_0(self):
+        setLogLevel('info')
+        top0 = Toplevel()
+        top0.title("Tutorial 0 Instructions")
+        msg = Message(top0, textvariable=instr0)
+        instr0.set("Please follow the instruction on the paper\n"
+        "Initializing Twinpair Topology.")
+        msg.pack()
+        self.twinpair_topo()
+
+        top0.mainloop()
+        
 
     def tutorial_1(self):
         setLogLevel('info')
-        # create root window contents...
+        # basic mininet tutorial.
         top1 = Toplevel()
         top1.title("Tutorial 1 Instructions")
         instr1 = StringVar()
@@ -419,6 +594,25 @@ class App:
 
         #Next Step: Make sure all the options above work
 
+    #exceptions
+
+    def check_node(self,cnode,net):
+        while cnode not in net.keys():
+            msg.showwarning("Node Not Found!","Choose one of :  %s" % net.keys())
+            cnode=sdk.askstring("Node Entry", "Please reenter node: ")
+            return cnode
+
+    def check_node2(self,cnode,net,node1):
+        while cnode not in net.keys() or cnode == node1:
+            msg.showwarning("Node Error!","Choose one of :  %s" % net.keys())
+            cnode=sdk.askstring("Node Entry", "Please reenter node: ")
+            return cnode
+
+    # def ifHost(self,cnode,net):
+
+    # def ifSwitch(self,cnode,net):
+
+    
 
 root = Tk()
 root.title("Simple Mininet UI")
