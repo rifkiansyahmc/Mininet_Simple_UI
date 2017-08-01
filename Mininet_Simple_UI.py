@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 from Tkinter import *
-from tkSimpleDialog import *
-from tkMessageBox import *
 import tkSimpleDialog
 import tkMessageBox
 from CustomSwitchHostTopo import CustomSwitchHostTopo
@@ -20,15 +18,19 @@ from mininet.clean import Cleanup
 from mininet.link import TCIntf
 from mininet.link import Intf
 from mininet.link import Link
+import PairTopo
+import RectangleTopo
 
 sdk = tkSimpleDialog
 msg = tkMessageBox
+cln = Cleanup
 
 class App:
 
 
     def __init__(self, master):
         #main screen goes here
+        cln.cleanup()
         w = Label(root, text="Choose from the available topology. Right click each for details")
         w.pack()
         frame = Frame(master)
@@ -52,12 +54,12 @@ class App:
         tutorialButton = Button(frame, text="Tutorials", command=self.tutorial)
         tutorialButton.pack(side=LEFT)
 
-        def left_quit(event):
+        def left_quit_init(event):
             frame.quit
-        def right_quit(event):
+        def right_quit_init(event):
             msg.showinfo("Help","Quit the program.")
-        quitButton.bind('<Button-1>', left_quit)   
-        quitButton.bind('<Button-3>', right_quit)  
+        quitButton.bind('<Button-1>', left_quit_init)   
+        quitButton.bind('<Button-3>', right_quit_init)  
 
         def left_minimal(event):
             self.minimal_topo
@@ -113,6 +115,7 @@ class App:
         option = self.options(net)
         net.stop()
 
+
     def linear_topo(self):
         setLogLevel('info')
         topo = CustomSwitchHostTopo(n=4)
@@ -122,6 +125,7 @@ class App:
         dumpNodeConnections(net.hosts)
         option = self.options(net)
         net.stop()
+
 
     def tree_topo(self):
         setLogLevel('info')
@@ -135,6 +139,7 @@ class App:
         option = self.options(net)
         net.stop()
 
+
     def torus_topo(self):
         setLogLevel('info')
         xCount = input('Enter number of x-side nodes: ')
@@ -147,6 +152,7 @@ class App:
         option = self.options(net)
         net.stop()
 
+
     def reversed_switch(self):
         setLogLevel('info')
         hCount = input('Enter number of hosts: ')
@@ -158,47 +164,57 @@ class App:
         option = self.options(net)
         net.stop()
 
+
     def rectangle_topo(self):
         setLogLevel('info')
-        rect_topo = RectangleTopo()
+        rect_topo = RectangleTopo.RectangleTopo()
         net = Mininet(topo=rect_topo, controller=OVSController)
         net.start()
         print "Dumping host connections"
         dumpNodeConnections(net.hosts)
-        option = self.options()
+        option = self.options(net)
         net.stop()
+
 
     def twinpair_topo(self):
         setLogLevel('info')
-        pair_topo = PairTopo()
-        net = Mininet(topo=rect_topo, controller=OVSController)
+        pair_topo = PairTopo.PairTopo()
+        net = Mininet(topo=pair_topo, controller=OVSController)
         net.start()
         print "Dumping host connections"
         dumpNodeConnections(net.hosts)
-        option = self.options()
+        option = self.options(net)
         net.stop()
+
 
         #tutorial menu goes here
 
-    def tutorial(self):
+    def tutorial(self): 
         topt = Toplevel()
         topt.title("SDN Tutorial Menu")
 
-        self.button = Button(
+        quitButtontutor = Button(
             topt, text="QUIT", fg="red", command=topt.quit
             )
-        self.button.pack(side=LEFT)
+        quitButtontutor.pack(side=LEFT)
 
-        self.tutor0_Button = Button(topt, text="Tutorial 0", command=self.tutorial_0)
-        self.tutor0_Button.pack(side=LEFT)
-        self.tutor1_Button = Button(topt, text="Tutorial 1", command=self.tutorial_1)
-        self.tutor1_Button.pack(side=LEFT)
-        self.tutor2_Button = Button(topt, text="Tutorial 2", command=self.tutorial_2)
-        self.tutor2_Button.pack(side=LEFT)
-        self.tutor3_Button = Button(topt, text="Tutorial 3", command=self.tutorial_3)
-        self.tutor3_Button.pack(side=LEFT)
-        self.tutor4_Button = Button(topt, text="Tutorial 4", command=self.tutorial_4)
-        self.tutor4_Button.pack(side=LEFT)
+        tutor0_Button = Button(topt, text="Tutorial 0", command=self.tutorial_0)
+        tutor0_Button.pack(side=LEFT)
+        tutor1_Button = Button(topt, text="Tutorial 1", command=self.tutorial_1)
+        tutor1_Button.pack(side=LEFT)
+        tutor2_Button = Button(topt, text="Tutorial 2", command=self.tutorial_2)
+        tutor2_Button.pack(side=LEFT)
+        tutor3_Button = Button(topt, text="Tutorial 3", command=self.tutorial_3)
+        tutor3_Button.pack(side=LEFT)
+        tutor4_Button = Button(topt, text="Tutorial 4", command=self.tutorial_4)
+        tutor4_Button.pack(side=LEFT)
+
+        def left_quit_tutor(event):
+            topt.quit
+        def right_quit_tutor(event):
+            msg.showinfo("Help","Quit the program.")
+        quitButtontutor.bind('<Button-1>', left_quit_tutor)
+        quitButtontutor.bind('<Button-1>', left_quit_tutor)   
 
         #option menu goes here
 
@@ -206,9 +222,9 @@ class App:
         topopt = Toplevel()
         topopt.title("Mininet Toolbox. Right click each button for info")
 
-        quitButton = Button(
+        quitButtonTop = Button(
             topopt, text="QUIT", fg="red", command=topopt.quit)
-        quitButton.grid(row=10, column=5)
+        quitButtonTop.grid(row=10, column=5)
 
 
         pingButton = Button(topopt, text="Ping", width=10)
@@ -229,21 +245,23 @@ class App:
         delayButton.grid(row=2)
         jitterButton = Button(topopt, text="Jitter", width=10)
         jitterButton.grid(row=3)
-        lossButton = Button(topopt, text="Loss",width=10)
+        lossButton = Button(topopt, text="Loss", width=10)
         lossButton.grid(row=4)
-        IPButton = Button(topopt, text="Set IP",width=10)
+        IPButton = Button(topopt, text="Set IP", width=10)
         IPButton.grid(row=1, column=1)
-        MACButton = Button(topopt, text="Set MAC",width=10)
+        MACButton = Button(topopt, text="Set MAC", width=10)
         MACButton.grid(row=2, column=1)
-        linkButton = Button(topopt, text="Up/Down Link",width=10)
+        linkButton = Button(topopt, text="Up/Down Link", width=10)
         linkButton.grid(row=3, column=1)
-        hostButton = Button(topopt, text="Add Host",width=10)
+        checkIPButton = Button(topopt, text="Check IP", width=10)
+        checkIPButton.grid(row=4, column=1)
+        hostButton = Button(topopt, text="Add Host", width=10)
         hostButton.grid(row=1, column=3)
-        switchButton = Button(topopt, text="Add Switch",width=10)
+        switchButton = Button(topopt, text="Add Switch", width=10)
         switchButton.grid(row=1, column=2)
-        iperfButton = Button(topopt, text="Do iperf",width=10)
+        iperfButton = Button(topopt, text="Do iperf", width=10)
         iperfButton.grid(row=2, column=2)
-        iperfudpButton = Button(topopt, text="Do iperfudp",width=10)
+        iperfudpButton = Button(topopt, text="Do iperfudp", width=10)
         iperfudpButton.grid(row=3, column=2)
         nodeButton = Button(topopt, text="Node List", width=10)
         nodeButton.grid(row=2, column=3)
@@ -261,8 +279,7 @@ class App:
         stopswitchButton.grid(row=5, column=4)
         delnodeButton = Button(topopt, text="Delete Node", width=10)
         delnodeButton.grid(row=6, column=4)
-
-        cliButton = Button(topopt, text="CLI", fg = "blue", width=5,command=lambda: CLI(net))
+        cliButton = Button(topopt, text="CLI", fg = "blue", width=5, command=lambda: CLI(net))
         cliButton.grid(row=10, column=0)
 
         #CLICK EVENTS GOES HERE.
@@ -441,6 +458,13 @@ class App:
         delnodeButton.bind('<Button-1>', left_delnode)   
         delnodeButton.bind('<Button-3>', right_delnode)  
 
+        def left_checkIP(event):
+            self.check_IP(net)
+        def right_checkIP(event):
+            msg.showinfo("Help","Check the IP of a node.")
+        checkIPButton.bind('<Button-1>', left_checkIP)   
+        checkIPButton.bind('<Button-3>', right_checkIP) 
+
         def left_CLI(event):
             CLI(net)
         def right_CLI(event):
@@ -448,12 +472,12 @@ class App:
         cliButton.bind('<Button-1>', left_CLI)   
         cliButton.bind('<Button-3>', right_CLI)  
 
-        def left_quit(event):
+        def left_quit_topopt(event):
             topopt.quit
-        def right_quit(event):
+        def right_quit_topopt(event):
             msg.showinfo("Help","Quit the program.")
-        quitButton.bind('<Button-1>', left_quit)   
-        quitButton.bind('<Button-3>', right_quit)  
+        quitButtonTop.bind('<Button-1>', left_quit_topopt)   
+        quitButtonTop.bind('<Button-3>', right_quit_topopt)  
 
 
         topopt.mainloop()
@@ -463,10 +487,10 @@ class App:
     def ping_node(self,net):
 
         currenth1=sdk.askstring("Ping Node","Please enter node 1: ")
-        if currenth1 not in net.keys():
+        if currenth1 not in net.keys() or currenth1 is None:
             currenth1 = self.check_node(currenth1,net)
         currenth2=sdk.askstring("Ping Node","Please enter node 2: ")
-        if currenth2 not in net.keys() or currenth2 == currenth1:
+        if currenth2 not in net.keys() or currenth2 == currenth1 or currenth2 is None:
             currenth2 = self.check_node2(currenth2,net,currenth1)
         h = ['h1','h2']
         h[0] = net.get(currenth1)
@@ -476,10 +500,10 @@ class App:
     def set_bandwidth(self, net):
         print "Set Bandwidth"
         currentn1=sdk.askstring("Set Bandwidth","Please enter node 1: ")
-        if currentn1 not in net.keys():
+        if currentn1 not in net.keys() or currentn1 is None:
             currentn1 = self.check_node(currentn1,net)
         currentn2=sdk.askstring("Set Bandwidth","Please enter node 2: ")
-        if currentn2 not in net.keys() or currentn2 == currentn1:
+        if currentn2 not in net.keys() or currentn2 == currentn1 or currentn2 is None:
             currentn2 = self.check_node2(currentn2,net,currentn1)
         b1 = net.get(currentn1)
         b2 = net.get(currentn2)
@@ -495,10 +519,10 @@ class App:
     def set_delay(self, net):
         print "Set delay"
         currentd1=sdk.askstring("Set Delay","Please enter node 1: ")
-        if currentd1 not in net.keys():
+        if currentd1 not in net.keys() or currentd1 is None:
             currentd1 = self.check_node(currentd1,net)
         currentd2=sdk.askstring("Set Delay","Please enter node 2: ")
-        if currentd2 not in net.keys() or currentd2 == currentd1:
+        if currentd2 not in net.keys() or currentd2 == currentd1 or currentd2 is None:
             currentd2 = self.check_node2(currentd2,net,currentd1)
         d1 = net.get(currentd1)
         d2 = net.get(currentd2)
@@ -512,10 +536,10 @@ class App:
     def set_jitter(self, net):
         print "Set jitter"
         currentj1=sdk.askstring("Set Jitter","Please enter node 1: ")
-        if currentj1 not in net.keys():
+        if currentj1 not in net.keys() or currentj1 is None:
             currentj1 = self.check_node(currentj1,net)
         currentj2=sdk.askstring("Set Jitter","Please enter node 2: ")
-        if currentj2 not in net.keys() or currentj2 == currentj1:
+        if currentj2 not in net.keys() or currentj2 == currentj1 or currentj2 is None:
             currentj2 = self.check_node2(currentj2,net,currentj1)
         j1 = net.get(currentj1)
         j2 = net.get(currentj2)
@@ -528,11 +552,11 @@ class App:
 
     def set_loss(self, net):
         print "Set loss"
-        currentj1=sdk.askstring("Set Loss","Please enter node 1: ")
-        if currentl1 not in net.keys():
+        currentl1=sdk.askstring("Set Loss","Please enter node 1: ")
+        if currentl1 not in net.keys() or currentl1 is None:
             currentl1 = self.check_node(currentl1,net)
         currentl2=sdk.askstring("Set Loss","Please enter node 2: ")
-        if currentl2 not in net.keys() or currentl2 == currentl1:
+        if currentl2 not in net.keys() or currentl2 == currentl1 or currentl2 is None:
             currentl2 = self.check_node2(currentl2,net,currentl1)
         l1 = net.get(currentl1)
         l2 = net.get(currentl2)
@@ -546,31 +570,46 @@ class App:
     def set_IP(self, net):
         print "Set IP"
         currentIP=sdk.askstring("Set IP","Please enter node 1: ")
-        if currentIP not in net.keys():
+        if currentIP not in net.keys() or currentIP is None:
             currentIP = self.check_node(currentIP,net)
         i = net.get(currentIP)
+        #if i.Intf is None:
+        #    msg.showwarning("No Interface", "No interface are available, please make one first.")
+        #    set_IP(self,net)
         newi=sdk.askstring("New IP","Please enter the desired IP: ")
         i.setIP(ip=newi)
         print "The new IP is:", i.IP()
+
     def set_MAC(self, net):
         currentMAC=sdk.askstring("Set MAC","Please enter node 1: ")
-        if currentMAC not in net.keys():
+        if currentMAC not in net.keys() or currentMAC is None:
             currentMAC = self.check_node(currentMAC,net)
         m = net.get(currentMAC)
+        #if m.Intf is None:
+        #    msg.showwarning("No Interface", "No interface are available, please make one first.")
+        #    set_MAC(self,net)
         newm=sdk.askstring("New MAC","Please enter the desired MAC: ")
         m.setMAC(newm)
         print "The new MAC is:", i.MAC()
 
+    def check_IP(self,net):
+        print "Check IP"
+        currentIP=sdk.askstring("Checking IP","Please enter node 1: ")
+        if currentIP not in net.keys() or currentIP is None:
+            currentIP = self.check_node(currentIP,net)
+        i = net.get(currentIP)
+        msg.showinfo("IP Address",i.IP)
+
     def set_link(self, net):   
-        msg.showwarning("1. Up Link. 2. Down Link")
+        msg.showinfo("Set link options","1. Up Link. 2. Down Link")
         link_opt = sdk.askinteger("Link Options","What do you want to do? ")
         if link_opt=="1":
             print ("Enter the nodes you want to link: ")
             link1=sdk.askstring("Up Link","Please enter node 1: ")
-            if link1 not in net.keys():
+            while link1 not in net.keys() or link1 is None:
                 link1 = self.check_node(link1,net)
             link2=sdk.askstring("Up Link","Please enter node 2: ")
-            if link2 not in net.keys() or link2 == link1:
+            while link2 not in net.keys() or link2 == link1 or link2 is None:
                 link2 = self.check_node2(link2,net,link1)
             node1 = net.get(link1)
             node2 = net.get(link2)
@@ -586,7 +625,7 @@ class App:
                 node2 = net.get(down2)
                 down_link=net.configLinkStatus(node1,node2, 'down')
         else: 
-            msg.showwarning("Please choose one of the options: ")
+            msg.showwarning("Option unavailable","Please choose one of the options!\n 1. Up Link \n 2. Down Link")
             set_link(self,net)
 
 
@@ -595,10 +634,10 @@ class App:
         bw = 10000
         delay = 10
         source=sdk.askstring("Source","Please enter source node: ")
-        if source not in net.keys():
+        if source not in net.keys() or source is None:
             source = self.check_node(source,net)
         dest=sdk.askstring("Destination","Please destination node: ")
-        if dest not in net.keys() or dest == source:
+        if dest not in net.keys() or dest == source or dest is None:
             dest = self.check_node2(dest,net,source)
         bw_input = sdk.askstring("Bandwidth","Enter the desired bandwidth(default 10 GB): ")
         if (bw_input is not None):
@@ -615,11 +654,17 @@ class App:
     def add_host(self,net):
         print "Add host"
         hostname = sdk.askstring("Add Host","Enter name of host: ")
+        while hostname in net.keys() or hostname is None:
+            msg.showwarning("Warning!","Node already existed!")
+            hostname = sdk.askstring("Add Host","Reenter name of host: ")
         net.addHost(name = hostname)
 
     def add_switch(self,net):
         print "Add switch"
         switchname = sdk.askstring("Add Switch","Enter name of switch: ")
+        while switchname in net.keys() or switchname is None:
+            msg.showwarning("Warning!","Node already existed!")
+            switchname = sdk.askstring("Add Switch","Reenter name of switch: ")
         net.addSwitch(name = switchname)
 
     def add_NAT(self,net):
@@ -631,6 +676,9 @@ class App:
     def add_Controller(self,net):
         print "Add Controller"
         ctrlName = sdk.askstring("Add Controller","Enter Controller name: ")
+        while ctrlName in net.keys() or ctrlName is None:
+            msg.showwarning("Warning!","Node already existed!")
+            ctrlName = sdk.askstring("Add Controller","Reenter Controller name: ")
         net.addController(name=ctrlName,
                           controller=OVSController,
                           protocol=controllerProtocol,
@@ -639,10 +687,10 @@ class App:
     def delete_link(self,net):
         print "Delete link"
         currentn1 = sdk.askstring("Delete Link","Enter node 1 to delete link: ")
-        if currentn1 not in net.keys():
+        if currentn1 not in net.keys() or currentn1 is None:
             currentn1 = self.check_node(currentn1,net)
         currentn2 = sdk.askstring("Delete Link","Enter node 2 to delete link: ")
-        if currentn2 not in net.keys() or currentn2 == currentn1:
+        if currentn2 not in net.keys() or currentn2 == currentn1 or currentn2 is None:
             currentn2 = self.check_node2(currentn2,net,currentn1)
         node1 = net.get(currentn1)
         node2 = net.get(currentn2)
@@ -651,25 +699,25 @@ class App:
     def stop_switch(self,net):
         print "Stop switch"
         currents = sdk.askstring("Stop Switch","Enter switch to stop: ")
-        if currents not in net.keys():
+        if currents not in net.keys() or currents is None:
             currents = self.check_node(currents,net)
         switch1 = net.get(currents)
-        net.stop(switch1)
+        switch1.stop()
 
     def del_node(self,net):
         print "Delete node"
         currentn = sdk.askstring("Delete Node","Enter node to delete: ")
-        if currentn not in net.keys():
+        if currentn not in net.keys() or currentn is None:
             currentn = self.check_node(currentn,net)
         node1 = net.get(currentn)
         net.delNode(node1)
 
     def start_iperf(self,net):
         currenth1 = sdk.askstring("Iperf","Enter node 1 to iperf: ")
-        if currenth1 not in net.keys():
+        if currenth1 not in net.keys() or currenth1 is None:
             currenth1 = self.check_node(currents,net)
         currenth2 = sdk.askstring("Iperf","Enter node 2 to iperf: ")
-        if currenth2 not in net.keys() or currenth2 == currenth1:
+        if currenth2 not in net.keys() or currenth2 == currenth1 or currenth2 is None:
             currenth2 = self.check_node2(currenth2,net,currenth1)
         h = ['h1','h2']
         h[0] = net.get(currenth1)
@@ -678,10 +726,10 @@ class App:
 
     def start_iperfudp(self,net):
         currenth1 = sdk.askstring("IperfUDP","Enter node 1 to iperf: ")
-        if currenth1 not in net.keys():
+        if currenth1 not in net.keys() or currenth1 is None:
             currenth1 = self.check_node(currents,net)
         currenth2 = sdk.askstring("IperfUDP","Enter node 2 to iperf: ")
-        if currenth2 not in net.keys() or currenth2 == currenth1:
+        if currenth2 not in net.keys() or currenth2 == currenth1 or currenth2 is None:
             currenth2 = self.check_node2(currenth2,net,currenth1)
         bw=sdk.askstring("IperfUDP Bandwidth","Please enter UDP Bandwidth: ")
         h = ['h1','h2']
@@ -697,10 +745,10 @@ class App:
 
     def ping_full(self,net):
         currenth1 = sdk.askstring("Ping Full","Enter node 1 to ping full: ")
-        if currenth1 not in net.keys():
+        if currenth1 not in net.keys() or currenth1 is None:
             currenth1 = self.check_node(currents,net)
         currenth2 = sdk.askstring("Ping Full","Enter node 2 to ping full: ")
-        if currenth2 not in net.keys() or currenth2 == currenth1:
+        if currenth2 not in net.keys() or currenth2 == currenth1 or currenth2 is None:
             currenth2 = self.check_node2(currenth2,net,currenth1)
         h = ['h1','h2']
         h[0] = net.get(currenth1)
@@ -747,10 +795,11 @@ class App:
         setLogLevel('info')
         top0 = Toplevel()
         top0.title("Tutorial 0 Instructions")
-        msg = Message(top0, textvariable=instr0)
+        instr0 = StringVar()
+        info = Message(top0, textvariable=instr0)
         instr0.set("Please follow the instruction on the paper\n"
         "Initializing Twinpair Topology.")
-        msg.pack()
+        info.pack()
         self.twinpair_topo()
 
         top0.mainloop()
@@ -762,7 +811,7 @@ class App:
         top1 = Toplevel()
         top1.title("Tutorial 1 Instructions")
         instr1 = StringVar()
-        msg = Message(top1, textvariable=instr1)
+        info = Message(top1, textvariable=instr1)
         instr1.set("Log level is set to 'info'.\n"
         "Minimal topology used.\n"
         "The first tutorial is to familiarize Mininet commands\n"
@@ -775,7 +824,7 @@ class App:
         "6. Use 'nodes' to see all available nodes.\n"
         "7. Use 'pingpairfull' to see the details of each ping pair.\n"
         "Please use CLI option to do the above actions.")
-        msg.pack()
+        info.pack()
         self.minimal_topo()
 
         top1.mainloop()
@@ -785,7 +834,7 @@ class App:
         top2 = Toplevel()
         top2.title("Tutorial 2 Instructions")
         instr2 = StringVar()
-        msg = Message(top2, textvariable=instr2)
+        info = Message(top2, textvariable=instr2)
         instr2.set("Log level is set to 'info'.\n"
         "Tree topology used.\n"
         "This tutorial are regarding the Open vSwitch.\n"
@@ -802,7 +851,7 @@ class App:
         "7. Use 'ovs-ofctl add-flow s1 action=normal'\n"
         "8. Try pinging again.\n"
         "Please use CLI option to do the above actions.")
-        msg.pack()
+        info.pack()
         self.tree_topo()
 
         top2.mainloop()
@@ -812,7 +861,7 @@ class App:
         top3 = Toplevel()
         top3.title("Tutorial 3 Instructions")
         instr3 = StringVar()
-        msg = Message(top3, textvariable=instr3)
+        info = Message(top3, textvariable=instr3)
         instr3.set("Log level is set to 'info'.\n"
         "Linear topology used.\n"
         "This tutorial are regarding traffic.\n"
@@ -829,7 +878,7 @@ class App:
         "5. Open xterm for two more pair of hosts.\n"
         "6. Start tcpdump on both and do pingall."
         "Please use CLI option to do the above actions.")
-        msg.pack()
+        info.pack()
         self.linear_topo()
 
     def tutorial_4(self):
@@ -837,7 +886,7 @@ class App:
         top4 = Toplevel()
         top4.title("Tutorial 4 Instructions")
         instr4 = StringVar()
-        msg = Message(top4, textvariable=instr4)
+        info = Message(top4, textvariable=instr4)
         instr4.set("Log level is set to 'info'.\n"
         "Rectangle topology used.\n"
         "This tutorial are regarding routing.\n"
@@ -851,7 +900,7 @@ class App:
         "4. Use 'link s1 s2 up'.\n"
         "5. Ping h1 to h6. Observe xterm\n"
         "Please use CLI option to do the above actions.")
-        msg.pack()
+        info.pack()
         self.rectangle_topo()
 
         #Next Step: Make sure all the options above work
@@ -859,13 +908,13 @@ class App:
     #exceptions
 
     def check_node(self,cnode,net):
-        while cnode not in net.keys():
-            msg.showwarning("Node Not Found!","Choose one of :  %s" % net.keys())
+        while cnode not in net.keys() or cnode is None:
+            msg.showwarning("Node Not found!","Choose one of :  %s" % net.keys())
             cnode=sdk.askstring("Node Entry", "Please reenter node: ")
             return cnode
 
     def check_node2(self,cnode,net,node1):
-        while cnode not in net.keys() or cnode == node1:
+        while cnode not in net.keys() or cnode == node1 or cnode is None:
             msg.showwarning("Node Error!","Choose one of :  %s" % net.keys())
             cnode=sdk.askstring("Node Entry", "Please reenter node: ")
             return cnode
@@ -884,4 +933,5 @@ root.title("Simple Mininet UI")
 app = App(root)
 
 root.mainloop()
-root.destroy() # optional; see description below
+cln.cleanup()
+root.destroy()
