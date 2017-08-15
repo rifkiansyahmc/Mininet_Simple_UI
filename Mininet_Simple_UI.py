@@ -39,6 +39,7 @@ class App:
         quitButton = Button(
             frame, text="QUIT", fg="red", command=frame.quit
             )
+        quitButton.configure(font=('Sans','14','bold'))
         quitButton.pack(side=LEFT)
 
         minimalButton = Button(frame, text="Minimal", command=self.minimal_topo)
@@ -196,6 +197,7 @@ class App:
         quitButtontutor = Button(
             topt, text="QUIT", fg="red", command=topt.quit
             )
+        quitButtontutor.configure(font=('Sans','14','bold'))
         quitButtontutor.pack(side=LEFT)
 
         tutor0_Button = Button(topt, text="Tutorial 0", command=self.tutorial_0)
@@ -223,64 +225,73 @@ class App:
         topopt.title("Mininet Toolbox. Right click each button for info")
 
         quitButtonTop = Button(
-            topopt, text="QUIT", fg="red", command=topopt.quit)
-        quitButtonTop.grid(row=10, column=5)
+            topopt, text="QUIT", fg="red",command=topopt.quit)
+        quitButtonTop.configure(font=('Sans','14','bold'))
+        quitButtonTop.grid(row=15, column=10)
 
 
         pingButton = Button(topopt, text="Ping", width=10)
-        pingButton.grid(row=0)
+        pingButton.grid(row=0,pady=5)
         pingpairButton = Button(topopt, text="Ping Pair", width=10)
-        pingpairButton.grid(row=0,column=1)
+        pingpairButton.grid(row=0,column=1,pady=5)
         pingpairfullButton = Button(topopt, text="Ping Pair Full", width=10)
-        pingpairfullButton.grid(row=0, column=2)
+        pingpairfullButton.grid(row=0, column=2,pady=5)
         pingfullButton = Button(topopt, text="Ping Full", width=10)
-        pingfullButton.grid(row=0,column=3)
+        pingfullButton.grid(row=0,column=3,pady=5)
         pingAllButton = Button(topopt, text="Ping All", width=10)
-        pingAllButton.grid(row=0,column=4)
+        pingAllButton.grid(row=0,column=4,pady=5)
         pingAllfullButton = Button(topopt, text="Ping All Full", width=10)
-        pingAllfullButton.grid(row=0,column=5)
-        bwButton = Button(topopt, text="Bandwidth", width=10)
-        bwButton.grid(row=1)
-        delayButton = Button(topopt, text="Delay", width=10)
-        delayButton.grid(row=2)
-        jitterButton = Button(topopt, text="Jitter", width=10)
-        jitterButton.grid(row=3)
-        lossButton = Button(topopt, text="Loss", width=10)
-        lossButton.grid(row=4)
+        pingAllfullButton.grid(row=0,column=5,pady=5)
+
+        bwButton = Button(topopt, text="Set Bandwidth", width=10)
+        bwButton.grid(row=2,column=0,pady=5)
+        delayButton = Button(topopt, text="Set Delay", width=10)
+        delayButton.grid(row=2, column=1,pady=5)
+        jitterButton = Button(topopt, text="Set Jitter", width=10)
+        jitterButton.grid(row=2, column=2,pady=5)
+        lossButton = Button(topopt, text="Set Loss", width=10)
+        lossButton.grid(row=2, column=3,pady=5)
         IPButton = Button(topopt, text="Set IP", width=10)
-        IPButton.grid(row=1, column=1)
+        IPButton.grid(row=2, column=4,pady=5)
         MACButton = Button(topopt, text="Set MAC", width=10)
-        MACButton.grid(row=2, column=1)
-        linkButton = Button(topopt, text="Up/Down Link", width=10)
-        linkButton.grid(row=3, column=1)
-        checkIPButton = Button(topopt, text="Check IP", width=10)
-        checkIPButton.grid(row=4, column=1)
+        MACButton.grid(row=2, column=5,pady=5)
+
         hostButton = Button(topopt, text="Add Host", width=10)
-        hostButton.grid(row=1, column=3)
+        hostButton.grid(row=4, column=0,pady=5)
         switchButton = Button(topopt, text="Add Switch", width=10)
-        switchButton.grid(row=1, column=2)
-        iperfButton = Button(topopt, text="Do iperf", width=10)
-        iperfButton.grid(row=2, column=2)
-        iperfudpButton = Button(topopt, text="Do iperfudp", width=10)
-        iperfudpButton.grid(row=3, column=2)
-        nodeButton = Button(topopt, text="Node List", width=10)
-        nodeButton.grid(row=2, column=3)
-        dumpButton = Button(topopt, text="Dump Nodes", width=10)
-        dumpButton.grid(row=3, column=3)
+        switchButton.grid(row=4, column=1,pady=5)
         addnatButton = Button(topopt, text="Add NAT", width=10)
-        addnatButton.grid(row=1, column=4)
+        addnatButton.grid(row=4, column=2,pady=5)
         addctrlButton = Button(topopt, text="Add Controller")
-        addctrlButton.grid(row=2, column=4)
+        addctrlButton.grid(row=4, column=3,pady=5)
+
+        iperfButton = Button(topopt, text="Do iperf", width=10)
+        iperfButton.grid(row=6, column=0,pady=5)
+        iperfudpButton = Button(topopt, text="Do iperfudp", width=10)
+        iperfudpButton.grid(row=6, column=1,pady=5)
+
+        nodeButton = Button(topopt, text="Node List", width=10)
+        nodeButton.grid(row=8, column=0,pady=5)
+        dumpButton = Button(topopt, text="Dump Nodes", width=10)
+        dumpButton.grid(row=8, column=1,pady=5)
+        linkButton = Button(topopt, text="Up/Down Link", width=10)
+        linkButton.grid(row=8, column=2,pady=5)
+        checkIPButton = Button(topopt, text="Check IP", width=10)
+        checkIPButton.grid(row=8, column=3,pady=5)
+
+
         addlinkButton = Button(topopt, text="Add Link", width=10)
-        addlinkButton.grid(row=3, column=4)
+        addlinkButton.grid(row=10, column=0,pady=5)
         dellinkButton = Button(topopt, text="Delete Link", width=10)
-        dellinkButton.grid(row=4, column=4)
+        dellinkButton.grid(row=10, column=1,pady=5)
         stopswitchButton = Button(topopt, text="Stop Switch", width=10)
-        stopswitchButton.grid(row=5, column=4)
+        stopswitchButton.grid(row=10, column=2,pady=5)
         delnodeButton = Button(topopt, text="Delete Node", width=10)
-        delnodeButton.grid(row=6, column=4)
+        delnodeButton.grid(row=10, column=3,pady=5)
+
         cliButton = Button(topopt, text="CLI", fg = "blue", width=5, command=lambda: CLI(net))
-        cliButton.grid(row=10, column=0)
+        cliButton.configure(font=('Sans','14','bold'))
+        cliButton.grid(row=15, column=0)
 
         #CLICK EVENTS GOES HERE.
         def left_ping(event):
@@ -532,6 +543,7 @@ class App:
         dstLink = links[0][1]
         srcLink.config(**{ 'delay' : newdelay})
         dstLink.config(**{ 'delay' : newdelay})
+        print "The new delay is: ", newdelay
 
     def set_jitter(self, net):
         print "Set jitter"
@@ -549,6 +561,7 @@ class App:
         dstLink = links[0][1]
         srcLink.config(**{ 'jitter' : newjitter})
         dstLink.config(**{ 'jitter' : newjitter})
+        print "The new jitter is: ", newjitter
 
     def set_loss(self, net):
         print "Set loss"
@@ -566,6 +579,7 @@ class App:
         dstLink = links[0][1]
         srcLink.config(**{ 'loss' : newloss})
         dstLink.config(**{ 'loss' : newloss})
+        print "The new loss is: ", newloss
 
     def set_IP(self, net):
         print "Set IP"
@@ -598,7 +612,7 @@ class App:
         if currentIP not in net.keys() or currentIP is None:
             currentIP = self.check_node(currentIP,net)
         i = net.get(currentIP)
-        msg.showinfo("IP Address",i.IP)
+        msg.showinfo("IP Address",i.IP())
 
     def set_link(self, net):   
         msg.showinfo("Set link options","1. Up Link. 2. Down Link")
@@ -614,6 +628,7 @@ class App:
             node1 = net.get(link1)
             node2 = net.get(link2)
             Link1=net.configLinkStatus(node1,node2, 'up')
+            print "Link between", down1, " and", down2, " up"
         if link_opt=="2":
             down1=sdk.askstring("Down Link","Please enter node 1: ")
             if down1 not in net.keys():
@@ -624,6 +639,7 @@ class App:
                 node1 = net.get(down1)
                 node2 = net.get(down2)
                 down_link=net.configLinkStatus(node1,node2, 'down')
+                print "Link between", down1, " and", down2, " down"
         else: 
             msg.showwarning("Option unavailable","Please choose one of the options!\n 1. Up Link \n 2. Down Link")
             set_link(self,net)
@@ -639,17 +655,18 @@ class App:
         dest=sdk.askstring("Destination","Please destination node: ")
         if dest not in net.keys() or dest == source or dest is None:
             dest = self.check_node2(dest,net,source)
-        bw_input = sdk.askstring("Bandwidth","Enter the desired bandwidth(default 10 GB): ")
+        bw_input = sdk.askstring("Bandwidth","Enter the desired bandwidth(empty for default 10 GB): ")
         if (bw_input is not None):
             bw_input = bw
         else: bw = bw
-        delay_input = sdk.askstring("Delay", "Enter the desired delay(default 10ms): ")
+        delay_input = sdk.askstring("Delay", "Enter the desired delay(empty for default 10ms): ")
         if (delay_input is not None):
             delay_input = delay
         else: delay = delay
         node1 = net.get(source)
         node2 = net.get(dest)
         net.addLink(node1,node2,bw,delay)
+        print "Added link between: ",node1, "and ", node2, "with Bandwidth: ", bw, " and delay:", delay
 
     def add_host(self,net):
         print "Add host"
@@ -658,6 +675,7 @@ class App:
             msg.showwarning("Warning!","Node already existed!")
             hostname = sdk.askstring("Add Host","Reenter name of host: ")
         net.addHost(name = hostname)
+        print "New host added: ",hostname 
 
     def add_switch(self,net):
         print "Add switch"
@@ -666,12 +684,14 @@ class App:
             msg.showwarning("Warning!","Node already existed!")
             switchname = sdk.askstring("Add Switch","Reenter name of switch: ")
         net.addSwitch(name = switchname)
+        print "New switch added: ",switchname
 
     def add_NAT(self,net):
         print "Add NAT"
         natname = sdk.askstring("Add NAT","Enter NAT name: ")
         connectTo = sdk.askstring("Switch Connect", "Enter Switch to connect to: ")
         net.addNAT(name = natname,connect = connectTo)
+        print "New NAT added: ", natname, "on ", connectTo
 
     def add_Controller(self,net):
         print "Add Controller"
@@ -683,6 +703,7 @@ class App:
                           controller=OVSController,
                           protocol=controllerProtocol,
                           port=controllerPort)
+        print "New Controller added: ", ctrlName
 
     def delete_link(self,net):
         print "Delete link"
@@ -695,6 +716,7 @@ class App:
         node1 = net.get(currentn1)
         node2 = net.get(currentn2)
         net.delLinkBetween(node1,node2)
+        print "Link between ", currentn1, " and ", currentn2, " deleted."
 
     def stop_switch(self,net):
         print "Stop switch"
@@ -703,6 +725,7 @@ class App:
             currents = self.check_node(currents,net)
         switch1 = net.get(currents)
         switch1.stop()
+        print "Switch ", currents, " stopped."
 
     def del_node(self,net):
         print "Delete node"
@@ -711,6 +734,7 @@ class App:
             currentn = self.check_node(currentn,net)
         node1 = net.get(currentn)
         net.delNode(node1)
+        print "Node ", currentn," deleted."
 
     def start_iperf(self,net):
         currenth1 = sdk.askstring("Iperf","Enter node 1 to iperf: ")
@@ -816,14 +840,13 @@ class App:
         "Minimal topology used.\n"
         "The first tutorial is to familiarize Mininet commands\n"
         "Use mininet basic commands to see the created network\n"
-        "1. Use 'h1 ping h2' and 'pingall'\n"
-        "2. Use 'iperf h1 h2' to see the TCP Bandwidth between h1 and h2\n"
-        "3. Use 'iperfudp 1M h1 h2' to see UDP Bandwidth between h1 and h2 at 1MB\n"
-        "4. Use 'links' to see available links\n"
-        "5. Use 'h2 ifconfig' to see properties of h2\n"
-        "6. Use 'nodes' to see all available nodes.\n"
-        "7. Use 'pingpairfull' to see the details of each ping pair.\n"
-        "Please use CLI option to do the above actions.")
+        "1. Use 'ping' between h1 and h2, then use 'pingall'\n"
+        "2. Use 'do iperf' between h1 and h2 to see the TCP Bandwidth between h1 and h2\n"
+        "3. Use 'do iperfudp' between h1 and h2 and fill Bandwidth with 1 MB. to see UDP Bandwidth between h1 and h2 at 1MB\n"
+        "4. Use 'dump nodes' to see available nodes\n"
+        "5. Use 'check IP' on h2 to see IP of h2\n"
+        "6. Use 'pingpairfull' to see the details of the first host pair (h1 and h2).\n"
+        "7. Quit the program.\n")
         info.pack()
         self.minimal_topo()
 
